@@ -1,29 +1,32 @@
 # js
 
-This repository demonstrates a simple Java program that reads all `*.csv` files from `D:\\temp` and writes the data to an InfluxDB instance. The example uses the [`influxdb-java`](https://github.com/influxdata/influxdb-java) library.
+This repository demonstrates a simple Java program that reads all `*.csv` files from `D:\\temp` and writes the data to an InfluxDB instance. The example uses the
+[`influxdb-java`](https://github.com/influxdata/influxdb-java) library.
 
 ## Usage
 
-1. Obtain the `influxdb-java` dependency (version `2.23`). If you use Maven, add:
+1. Ensure you have [Maven](https://maven.apache.org/) installed on the server.
+   Run the following command to download dependencies and build a single
+   executable JAR:
 
-```xml
-<dependency>
-  <groupId>org.influxdb</groupId>
-  <artifactId>influxdb-java</artifactId>
-  <version>2.23</version>
-</dependency>
-```
+   ```sh
+   mvn package
+   ```
 
-2. Compile the `ImportCsvToInflux` class:
+   This creates `target/importcsvinflux-1.0-SNAPSHOT-shaded.jar` containing
+   `ImportCsvToInflux` and all required libraries.
 
-```sh
-javac -cp influxdb-java-2.23.jar src/main/java/ImportCsvToInflux.java
-```
+2. Copy the resulting JAR to your local machine. Execute it with the desired
+   configuration:
 
-3. Run the program (adjust the classpath to where the JAR is located):
+   ```sh
+   INFLUX_URL=http://localhost:8086 \
+   INFLUX_USER=user \
+   INFLUX_PASS=password \
+   INFLUX_DB=exampledb \
+   CSV_DIR=D:/temp \
+   java -jar importcsvinflux-1.0-SNAPSHOT-shaded.jar
+   ```
 
-```sh
-java -cp influxdb-java-2.23.jar;. ImportCsvToInflux
-```
-
-The program skips lines beginning with `#` and writes the remaining lines directly as InfluxDB line protocol to the configured database.
+   Adjust the environment variables as needed. The program skips lines beginning
+   with `#` and writes the remaining lines directly as InfluxDB line protocol.

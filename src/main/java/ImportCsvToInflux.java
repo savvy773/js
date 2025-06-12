@@ -8,19 +8,21 @@ import org.influxdb.InfluxDBFactory;
 
 public class ImportCsvToInflux {
     public static void main(String[] args) throws Exception {
-        // Set up connection to InfluxDB
-        String url = "http://localhost:8086";
-        String username = "user"; // adjust as necessary
-        String password = "password";
-        String database = "exampledb";
+        // Set up connection to InfluxDB using environment variables when
+        // available so the same binary can run in different environments
+        String url = System.getenv().getOrDefault("INFLUX_URL", "http://localhost:8086");
+        String username = System.getenv().getOrDefault("INFLUX_USER", "user");
+        String password = System.getenv().getOrDefault("INFLUX_PASS", "password");
+        String database = System.getenv().getOrDefault("INFLUX_DB", "exampledb");
         
         InfluxDB influxDB = InfluxDBFactory.connect(url, username, password);
         influxDB.setDatabase(database);
 
-        File folder = new File("D:/temp");
+        String csvDir = System.getenv().getOrDefault("CSV_DIR", "D:/temp");
+        File folder = new File(csvDir);
         File[] files = folder.listFiles((dir, name) -> name.endsWith(".csv"));
         if (files == null) {
-            System.err.println("No CSV files found in " + folder.getAbsolutePath());
+            System.err.println("No CSV files found in " + csvDir);
             return;
         }
 
